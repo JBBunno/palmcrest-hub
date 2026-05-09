@@ -1,17 +1,17 @@
 [
   {
     "id": "app1",
-    "name": "LiveTrack",
-    "desc": "Shutdown schedule & work orders",
+    "name": "LiveTrack 1",
+    "desc": "Shutdown Campaign Part 1",
     "url": "https://jbbunno.github.io/livetrack/",
-    "emoji": "📍",
+    "emoji": "⚙️",
     "color": "c0",
     "enabled": true
   },
   {
     "id": "app2",
     "name": "LiveTrack 2",
-    "desc": "Shutdown Campaign part 2",
+    "desc": "Shutdown Campaign Part 1",
     "url": "",
     "emoji": "🔧",
     "color": "c1",
@@ -20,7 +20,7 @@
   {
     "id": "app3",
     "name": "Live Track 3",
-    "desc": "Shutdown Campaign 3",
+    "desc": "Shutdown Campaign Part 3",
     "url": "",
     "emoji": "🔧",
     "color": "c2",
