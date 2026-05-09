@@ -54,7 +54,6 @@
     @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     footer { text-align: center; padding: 16px 24px 32px; font-size: 11px; color: var(--muted); letter-spacing: 1px; border-top: 1px solid var(--border); }
 
-    /* Loading / error state */
     .load-msg { text-align: center; padding: 40px 20px; font-size: 14px; color: var(--muted); letter-spacing: 1px; }
     .load-msg.error { color: var(--danger); }
 
@@ -111,19 +110,57 @@
     .emoji-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
     .emoji-opt { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
     .emoji-opt.selected { border-color: var(--accent); background: rgba(240,165,0,0.12); }
-
-    /* Copy button — replaces Save */
     .copy-cfg-btn { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; color: var(--bg); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-top: 4px; transition: opacity 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
     .copy-cfg-btn:active { transform: scale(0.97); opacity: 0.85; }
     .copy-hint { text-align: center; font-size: 12px; color: var(--muted); letter-spacing: 1px; line-height: 1.6; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; }
     .copy-hint code { color: var(--accent2); font-size: 11px; }
-
     .add-btn { width: 100%; padding: 16px; background: transparent; border: 2px dashed var(--border); border-radius: 12px; color: var(--accent2); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s, color 0.2s; -webkit-tap-highlight-color: transparent; }
     .add-btn:active, .add-btn:hover { border-color: var(--accent2); }
     .saved-toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: white; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; z-index: 999; }
     .saved-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .pin-change-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
     .pin-change-title { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; color: var(--muted); }
+
+    /* ── IFRAME VIEWER ── */
+    #viewerPage {
+      display: none; position: fixed; inset: 0; z-index: 50;
+      flex-direction: column; background: var(--bg);
+    }
+    #viewerPage.active { display: flex; }
+    .viewer-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 52px 16px 12px; background: var(--surface);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .viewer-back {
+      background: rgba(240,165,0,0.12); border: 1px solid var(--accent);
+      border-radius: 20px; color: var(--accent); font-size: 13px;
+      font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 7px 16px; cursor: pointer; font-family: 'Barlow', sans-serif;
+      -webkit-tap-highlight-color: transparent; white-space: nowrap;
+    }
+    .viewer-title {
+      flex: 1; font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; text-align: center;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .viewer-spacer { width: 80px; }
+    #viewerFrame {
+      flex: 1; border: none; width: 100%; background: white;
+    }
+    .viewer-blocked {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; padding: 40px 24px; text-align: center;
+    }
+    .viewer-blocked p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .viewer-open-btn {
+      padding: 14px 28px; background: var(--accent); border: none;
+      border-radius: 12px; color: var(--bg); font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
   </style>
 </head>
 <body>
@@ -154,14 +191,14 @@
       <img src="https://static.wixstatic.com/media/ebac84_5fa2badf87b241a1b4fc82029b013974~mv2.png" alt="PalmCrest" style="width:200px;max-width:70vw;" />
     </div>
     <div class="tagline">App Hub</div>
-<button onclick="forceRefresh()" style="
-  background: rgba(240,165,0,0.12); border: 1px solid var(--accent);
-  border-radius: 20px; color: var(--accent); font-size: 12px;
-  letter-spacing: 2px; text-transform: uppercase; padding: 7px 20px;
-  cursor: pointer; margin-top: 8px; font-family: 'Barlow', sans-serif;
-  -webkit-tap-highlight-color: transparent; font-weight: 600;
-" id="refreshBtn">↻ Refresh</button>
-<div class="tap-dots" id="tapDots">
+    <button onclick="forceRefresh()" style="
+      background: rgba(240,165,0,0.12); border: 1px solid var(--accent);
+      border-radius: 20px; color: var(--accent); font-size: 12px;
+      letter-spacing: 2px; text-transform: uppercase; padding: 7px 20px;
+      cursor: pointer; margin-top: 8px; font-family: 'Barlow', sans-serif;
+      -webkit-tap-highlight-color: transparent; font-weight: 600;
+    " id="refreshBtn">↻ Refresh</button>
+    <div class="tap-dots" id="tapDots">
       <div class="tap-dot"></div><div class="tap-dot"></div><div class="tap-dot"></div>
       <div class="tap-dot"></div><div class="tap-dot"></div>
     </div>
@@ -219,10 +256,18 @@
   <div class="saved-toast" id="toast">✓ Copied!</div>
 </div>
 
-<script>
-  // ── CONFIG ────────────────────────────────────────────────────────────────
-  const CONFIG_URL = 'https://raw.githubusercontent.com/jbbunno/palmcrest-hub/main/config.json';
+<!-- ══ IFRAME VIEWER ══ -->
+<div id="viewerPage">
+  <div class="viewer-bar">
+    <button class="viewer-back" onclick="closeViewer()">◀ Hub</button>
+    <div class="viewer-title" id="viewerTitle"></div>
+    <div class="viewer-spacer"></div>
+  </div>
+  <iframe id="viewerFrame" allowfullscreen></iframe>
+</div>
 
+<script>
+  const CONFIG_URL = 'https://raw.githubusercontent.com/jbbunno/palmcrest-hub/main/config.json';
   const EMOJI_OPTIONS = ['📍','⚡','📄','📊','🔧','⚙️','🏗️','📋','🗂️','🔔','🛠️','🚧','📌','🔍','💼','🌐','🏔️','🔑'];
   const COLORS = ['c0','c1','c2','c3','c4'];
 
@@ -235,15 +280,45 @@
   let apps = JSON.parse(JSON.stringify(DEFAULT_APPS));
   let adminPin = localStorage.getItem('pc_hub_pin') || '1234';
   let tapCount = 0, tapTimer = null, pinEntry = '';
-  // ── Refresh function ─────────────────────────────────────────────────────────────────
+
+  // ── IFRAME VIEWER ─────────────────────────────────────────────────────────
+  function openViewer(url, name) {
+    if (!url) return;
+    document.getElementById('viewerTitle').textContent = name;
+    document.getElementById('viewerFrame').src = url;
+    document.getElementById('viewerPage').classList.add('active');
+    // detect if iframe was blocked (X-Frame-Options)
+    document.getElementById('viewerFrame').onerror = () => showBlocked(url, name);
+  }
+
+  function closeViewer() {
+    const viewer = document.getElementById('viewerPage');
+    viewer.classList.remove('active');
+    // clear src to stop the page running in background
+    document.getElementById('viewerFrame').src = '';
+  }
+
+  function showBlocked(url, name) {
+    const frame = document.getElementById('viewerFrame');
+    frame.style.display = 'none';
+    const blocked = document.createElement('div');
+    blocked.className = 'viewer-blocked';
+    blocked.innerHTML =
+      '<p>' + name + ' cannot be displayed inside the hub.<br>Tap below to open it.</p>' +
+      '<button class="viewer-open-btn" onclick="window.open(\'' + url + '\',\'_blank\')">Open ' + name + '</button>';
+    document.getElementById('viewerPage').appendChild(blocked);
+  }
+
+  // ── REFRESH ───────────────────────────────────────────────────────────────
   async function forceRefresh() {
-  const btn = document.getElementById('refreshBtn');
-  btn.textContent = '⏳ Loading…';
-  btn.disabled = true;
-  await fetchConfig();
-  btn.textContent = '↻ Refresh';
-  btn.disabled = false;
-}
+    const btn = document.getElementById('refreshBtn');
+    btn.textContent = '⏳ Loading…';
+    btn.disabled = true;
+    await fetchConfig();
+    btn.textContent = '↻ Refresh';
+    btn.disabled = false;
+  }
+
   // ── LOGIN ─────────────────────────────────────────────────────────────────
   const LOGIN_PASSWORD_KEY = 'pc_hub_pw';
   function loadLoginPw() { return localStorage.getItem(LOGIN_PASSWORD_KEY) || 'palmcrest'; }
@@ -281,7 +356,7 @@
     f.type = f.type === 'password' ? 'text' : 'password';
   }
 
-  // ── FETCH CONFIG FROM GITHUB ──────────────────────────────────────────────
+  // ── FETCH CONFIG ──────────────────────────────────────────────────────────
   async function fetchConfig() {
     const grid = document.getElementById('appGrid');
     grid.innerHTML = '<div class="load-msg">Loading apps…</div>';
@@ -357,11 +432,10 @@
       return;
     }
     visible.forEach((app, i) => {
-      const card = document.createElement('a');
+      const card = document.createElement('div');
       card.className = 'app-card';
-      card.href = app.url || '#';
-      if (app.url) { card.target = '_blank'; card.rel = 'noopener'; }
       card.style.animationDelay = `${0.05 + i * 0.07}s`;
+      card.onclick = () => { if (app.url) openViewer(app.url, app.name); };
       card.innerHTML =
         '<div class="app-icon ' + app.color + '">' + app.emoji + '</div>' +
         '<div class="app-info"><div class="app-name">' + escHtml(app.name) + '</div><div class="app-desc">' + escHtml(app.desc) + '</div></div>' +
@@ -374,7 +448,6 @@
   function renderAdmin() {
     const c = document.getElementById('adminCards');
     c.innerHTML = '';
-
     apps.forEach((app, idx) => {
       const card = document.createElement('div');
       card.className = 'admin-card';
@@ -396,14 +469,12 @@
       c.appendChild(card);
     });
 
-    // Add app
     const addBtn = document.createElement('button');
     addBtn.className = 'add-btn';
     addBtn.textContent = '+ Add Another App';
     addBtn.onclick = addApp;
     c.appendChild(addBtn);
 
-    // PIN / Password change
     const pinCard = document.createElement('div');
     pinCard.className = 'pin-change-card';
     pinCard.innerHTML =
@@ -415,14 +486,11 @@
       '<input class="field-input" id="newLoginPw" type="text" placeholder="Enter new login password" />';
     c.appendChild(pinCard);
 
-    // Hint text
     const hint = document.createElement('div');
     hint.className = 'copy-hint';
-    hint.innerHTML =
-      'After copying, paste the JSON into <code>config.json</code> in your GitHub repo and commit.<br>All devices will see the changes on next load.';
+    hint.innerHTML = 'After copying, paste the JSON into <code>config.json</code> in your GitHub repo and commit.<br>All devices will see the changes on next load.';
     c.appendChild(hint);
 
-    // Copy config.json button
     const copyBtn = document.createElement('button');
     copyBtn.className = 'copy-cfg-btn';
     copyBtn.textContent = '📋 Copy config.json';
@@ -448,9 +516,7 @@
     setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
   }
 
-  // ── COPY CONFIG (replaces saveChanges) ───────────────────────────────────
   async function copyConfig() {
-    // Read current form values into apps array
     apps.forEach((app, idx) => {
       const n = document.getElementById('name_' + idx);
       const d = document.getElementById('desc_' + idx);
@@ -459,18 +525,10 @@
       if (d) app.desc = d.value.trim();
       if (u) app.url  = u.value.trim();
     });
-
-    // Save PIN / password locally (these aren't in config.json)
     const newPinInput = document.getElementById('newPin');
-    if (newPinInput && /^\d{4}$/.test(newPinInput.value.trim())) {
-      savePin(newPinInput.value.trim()); newPinInput.value = '';
-    }
+    if (newPinInput && /^\d{4}$/.test(newPinInput.value.trim())) { savePin(newPinInput.value.trim()); newPinInput.value = ''; }
     const newPwInput = document.getElementById('newLoginPw');
-    if (newPwInput && newPwInput.value.trim()) {
-      saveLoginPw(newPwInput.value.trim()); newPwInput.value = '';
-    }
-
-    // Copy JSON to clipboard
+    if (newPwInput && newPwInput.value.trim()) { saveLoginPw(newPwInput.value.trim()); newPwInput.value = ''; }
     const json = JSON.stringify(apps, null, 2);
     try { await navigator.clipboard.writeText(json); }
     catch {
@@ -478,7 +536,6 @@
       Object.assign(ta.style, { position:'fixed', opacity:'0' });
       document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
     }
-
     const toast = document.getElementById('toast');
     toast.textContent = '✓ config.json copied — paste it into GitHub!';
     toast.classList.add('show');
