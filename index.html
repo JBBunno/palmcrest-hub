@@ -1,1 +1,520 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PalmCrest" />
+  <meta name="theme-color" content="#0b1c33" />
+  <title>PalmCrest Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1c33;
+      --surface: #112240;
+      --border: #1e3a5f;
+      --accent: #f0a500;
+      --accent2: #2eb8b8;
+      --text: #e8f0fe;
+      --muted: #7a9cc0;
+      --card-hover: #172f52;
+      --danger: #e05252;
+      --green: #2eb87a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100dvh;
+      display: flex; flex-direction: column;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46,184,184,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(240,165,0,0.08) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .page { display: none; flex-direction: column; min-height: 100dvh; position: relative; z-index: 1; }
+    .page.active { display: flex; }
+
+    /* HEADER */
+    header {
+      padding: 48px 24px 20px; text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-mark {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 6px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; user-select: none;
+    }
+    .logo-icon {
+      width: 36px; height: 36px; background: var(--accent);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 18px; color: var(--bg);
+    }
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .logo-text span { color: var(--accent); }
+    .tagline { font-size: 12px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+    .tap-dots { display: flex; gap: 5px; justify-content: center; margin-top: 10px; height: 6px; }
+    .tap-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+    .tap-dot.lit { background: var(--accent); }
+
+    /* MAIN */
+    main { flex: 1; padding: 32px 20px 40px; max-width: 480px; margin: 0 auto; width: 100%; }
+    .section-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-left: 4px; }
+    .app-grid { display: flex; flex-direction: column; gap: 14px; }
+    .app-card {
+      display: flex; align-items: center; gap: 18px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 22px;
+      text-decoration: none; color: var(--text);
+      cursor: pointer; transition: background 0.18s, border-color 0.18s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden;
+    }
+    .app-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+      border-radius: inherit;
+    }
+    .app-card:active { transform: scale(0.97); background: var(--card-hover); }
+    @media (hover: hover) {
+      .app-card:hover { background: var(--card-hover); border-color: var(--accent2); transform: translateY(-2px); }
+    }
+    .app-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .c0 { background: linear-gradient(135deg, #0f3460, #1a5276); }
+    .c1 { background: linear-gradient(135deg, #4a1010, #7b2222); }
+    .c2 { background: linear-gradient(135deg, #0d3b2e, #1a6b4a); }
+    .c3 { background: linear-gradient(135deg, #2c1a4a, #5a3080); }
+    .c4 { background: linear-gradient(135deg, #1a3a1a, #2e6b2e); }
+    .app-info { flex: 1; min-width: 0; }
+    .app-name { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.1; }
+    .app-desc { font-size: 13px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; margin-left: 4px; }
+    .app-card { opacity: 0; animation: slideUp 0.35s ease forwards; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; padding: 16px 24px 32px; font-size: 11px; color: var(--muted); letter-spacing: 1px; border-top: 1px solid var(--border); }
+
+    /* LOGIN PAGE */
+    .login-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 40px 24px; }
+    .login-logo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .login-logo-mark { display: flex; align-items: center; gap: 12px; }
+    .login-logo-icon { width: 48px; height: 48px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 24px; color: var(--bg); }
+    .login-logo-text { font-family: 'Barlow Condensed', sans-serif; font-size: 34px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .login-logo-text span { color: var(--accent); }
+    .login-tagline { font-size: 11px; color: var(--muted); letter-spacing: 4px; text-transform: uppercase; }
+    .login-box { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px; }
+    .login-field-wrap { position: relative; }
+    .login-field { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; color: var(--text); font-family: 'Barlow', sans-serif; font-size: 16px; outline: none; transition: border-color 0.2s; }
+    .login-field:focus { border-color: var(--accent2); }
+    .login-field::placeholder { color: var(--muted); }
+    .login-field.shake { animation: shake 0.4s ease; border-color: var(--danger); }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
+    .show-pw { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; -webkit-tap-highlight-color: transparent; padding: 4px; }
+    .login-btn { width: 100%; padding: 17px; background: var(--accent); border: none; border-radius: 14px; color: var(--bg); font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
+    .login-btn:active { transform: scale(0.97); opacity: 0.85; }
+    .login-error { font-size: 13px; color: var(--danger); text-align: center; height: 18px; letter-spacing: 0.5px; }
+    .login-footer { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+    /* PIN PAGE */
+    .pin-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 40px 20px; }
+    .pin-title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+    .pin-subtitle { font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 1px; display: block; margin-top: 4px; }
+    .pin-dots { display: flex; gap: 14px; }
+    .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--muted); background: transparent; transition: background 0.15s, border-color 0.15s; }
+    .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+    .pin-dot.error { background: var(--danger); border-color: var(--danger); }
+    .pin-grid { display: grid; grid-template-columns: repeat(3, 72px); gap: 14px; }
+    .pin-btn {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pin-btn:active { transform: scale(0.92); background: var(--card-hover); }
+    .pin-btn.empty { visibility: hidden; }
+    .pin-error-msg { font-size: 13px; color: var(--danger); letter-spacing: 1px; height: 18px; text-align: center; }
+    .back-link { font-size: 14px; color: var(--accent2); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+    /* ADMIN PAGE */
+    .admin-header {
+      display: flex; align-items: center;
+      padding: 48px 20px 16px; border-bottom: 1px solid var(--border); gap: 12px;
+    }
+    .back-btn {
+      background: none; border: none; color: var(--accent2);
+      font-size: 15px; font-family: 'Barlow', sans-serif;
+      cursor: pointer; padding: 4px 0;
+      display: flex; align-items: center; gap: 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .admin-title { flex: 1; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .spacer { width: 60px; }
+    .admin-main { flex: 1; padding: 24px 20px 40px; max-width: 480px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 14px; }
+    .admin-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+    .admin-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .admin-card-id { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+    .toggle { width: 48px; height: 28px; border-radius: 14px; background: var(--border); position: relative; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; flex-shrink: 0; }
+    .toggle.on { background: var(--green); }
+    .toggle::after { content: ''; position: absolute; width: 22px; height: 22px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .toggle.on::after { transform: translateX(20px); }
+    .field-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .field-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Barlow', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; margin-bottom: 12px; }
+    .field-input:focus { border-color: var(--accent2); }
+    .field-input::placeholder { color: var(--muted); }
+    .emoji-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .emoji-opt { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
+    .emoji-opt.selected { border-color: var(--accent); background: rgba(240,165,0,0.12); }
+    .save-btn { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; color: var(--bg); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-top: 4px; transition: opacity 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
+    .save-btn:active { transform: scale(0.97); opacity: 0.85; }
+    .add-btn { width: 100%; padding: 16px; background: transparent; border: 2px dashed var(--border); border-radius: 12px; color: var(--accent2); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s, color 0.2s; -webkit-tap-highlight-color: transparent; }
+    .add-btn:active, .add-btn:hover { border-color: var(--accent2); }
+    .saved-toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: white; padding: 10px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; z-index: 999; }
+    .saved-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* PIN change section */
+    .pin-change-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+    .pin-change-title { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN PAGE ══ -->
+<div class="page active" id="loginPage">
+  <div class="login-screen">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <div class="login-logo-icon">PC</div>
+        <div class="login-logo-text">Palm<span>Crest</span></div>
+      </div>
+      <div class="login-tagline">Secure App Hub</div>
+    </div>
+    <div class="login-box">
+      <div class="login-field-wrap">
+        <input class="login-field" id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password" />
+        <button class="show-pw" onclick="toggleShowPw()" id="showPwBtn" tabindex="-1">👁</button>
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button class="login-btn" onclick="attemptLogin()">Enter</button>
+    </div>
+    <div class="login-footer">PalmCrest · Authorised Users Only</div>
+  </div>
+</div>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page" id="homePage">
+  <header>
+    <div class="logo-mark" id="logoTap">
+      <div class="logo-icon">PC</div>
+      <div class="logo-text">Palm<span>Crest</span></div>
+    </div>
+    <div class="tagline">App Hub</div>
+    <div class="tap-dots" id="tapDots">
+      <div class="tap-dot"></div><div class="tap-dot"></div><div class="tap-dot"></div>
+      <div class="tap-dot"></div><div class="tap-dot"></div>
+    </div>
+  </header>
+  <main>
+    <div class="section-label">Your Applications</div>
+    <div class="app-grid" id="appGrid"></div>
+  </main>
+  <footer>PALMCREST · SECURE PORTAL</footer>
+</div>
+
+<!-- ══ PIN PAGE ══ -->
+<div class="page" id="pinPage">
+  <header>
+    <div class="logo-mark">
+      <div class="logo-icon">PC</div>
+      <div class="logo-text">Palm<span>Crest</span></div>
+    </div>
+  </header>
+  <div class="pin-screen">
+    <div class="pin-title">Admin Access<span class="pin-subtitle">Enter PIN to continue</span></div>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-error-msg" id="pinError"></div>
+    <div class="pin-grid">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn empty"></button>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn" onclick="pinDelete()">⌫</button>
+    </div>
+    <span class="back-link" onclick="showPage('homePage')">◀ Cancel</span>
+  </div>
+</div>
+
+<!-- ══ ADMIN PAGE ══ -->
+<div class="page" id="adminPage">
+  <div class="admin-header">
+    <button class="back-btn" onclick="showPage('homePage')">◀ Back</button>
+    <div class="admin-title">Admin</div>
+    <div class="spacer"></div>
+  </div>
+  <div class="admin-main" id="adminCards"></div>
+  <div class="saved-toast" id="toast">✓ Changes saved</div>
+</div>
+
+<script>
+  const EMOJI_OPTIONS = ['📍','⚡','📄','📊','🔧','⚙️','🏗️','📋','🗂️','🔔','🛠️','🚧','📌','🔍','💼','🌐','🏔️','🔑'];
+  const COLORS = ['c0','c1','c2','c3','c4'];
+
+  const DEFAULT_APPS = [
+    { id:'app1', name:'LiveTrack', desc:'Shutdown schedule & work orders', url:'https://jbbunno.github.io/livetrack/', emoji:'📍', color:'c0', enabled:true },
+    { id:'app2', name:'Shutdown Events', desc:'Event management & documents', url:'', emoji:'⚡', color:'c1', enabled:true },
+    { id:'app3', name:'Your Third App', desc:'Replace with your app name', url:'', emoji:'📄', color:'c2', enabled:true },
+  ];
+
+  let apps = loadApps();
+  let adminPin = loadPin();
+  let tapCount = 0, tapTimer = null, pinEntry = '';
+
+  // ── LOGIN ──
+  const LOGIN_PASSWORD_KEY = 'pc_hub_pw';
+  function loadLoginPw() { return localStorage.getItem(LOGIN_PASSWORD_KEY) || 'palmcrest'; }
+  function saveLoginPw(p) { localStorage.setItem(LOGIN_PASSWORD_KEY, p); }
+
+  // Auto-skip login if already authenticated this session
+  if (sessionStorage.getItem('pc_authenticated') === '1') {
+    document.getElementById('loginPage').classList.remove('active');
+    document.getElementById('homePage').classList.add('active');
+  }
+
+  // Enter key on password field
+  document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+
+  function attemptLogin() {
+    const val = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginError');
+    const field = document.getElementById('loginPass');
+    if (val === loadLoginPw()) {
+      sessionStorage.setItem('pc_authenticated', '1');
+      err.textContent = '';
+      showPage('homePage');
+    } else {
+      err.textContent = 'Incorrect password';
+      field.classList.remove('shake');
+      void field.offsetWidth; // reflow to restart animation
+      field.classList.add('shake');
+      field.value = '';
+      setTimeout(() => { field.classList.remove('shake'); err.textContent = ''; }, 1500);
+    }
+  }
+
+  function toggleShowPw() {
+    const f = document.getElementById('loginPass');
+    f.type = f.type === 'password' ? 'text' : 'password';
+  }
+
+  function loadApps() {
+    try { const s = localStorage.getItem('pc_hub_apps'); return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_APPS)); }
+    catch(e) { return JSON.parse(JSON.stringify(DEFAULT_APPS)); }
+  }
+  function saveApps() { try { localStorage.setItem('pc_hub_apps', JSON.stringify(apps)); } catch(e) {} }
+  function loadPin() { return localStorage.getItem('pc_hub_pin') || '1234'; }
+  function savePin(p) { try { localStorage.setItem('pc_hub_pin', p); adminPin = p; } catch(e) {} }
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if (id === 'homePage') renderHome();
+    if (id === 'adminPage') renderAdmin();
+  }
+
+  // Secret tap
+  document.getElementById('logoTap').addEventListener('click', () => {
+    tapCount++;
+    document.querySelectorAll('.tap-dot').forEach((d,i) => d.classList.toggle('lit', i < tapCount));
+    clearTimeout(tapTimer);
+    if (tapCount >= 5) {
+      tapCount = 0;
+      document.querySelectorAll('.tap-dot').forEach(d => d.classList.remove('lit'));
+      pinEntry = ''; updatePinDots();
+      document.getElementById('pinError').textContent = '';
+      showPage('pinPage');
+    } else {
+      tapTimer = setTimeout(() => {
+        tapCount = 0;
+        document.querySelectorAll('.tap-dot').forEach(d => d.classList.remove('lit'));
+      }, 2000);
+    }
+  });
+
+  // PIN
+  function pinPress(d) {
+    if (pinEntry.length >= 4) return;
+    pinEntry += d; updatePinDots();
+    if (pinEntry.length === 4) {
+      setTimeout(() => {
+        if (pinEntry === adminPin) {
+          pinEntry = ''; updatePinDots(); showPage('adminPage');
+        } else {
+          document.querySelectorAll('#pinDots .pin-dot').forEach(d => d.classList.add('error'));
+          document.getElementById('pinError').textContent = 'Incorrect PIN';
+          setTimeout(() => { pinEntry = ''; updatePinDots(); document.getElementById('pinError').textContent = ''; }, 900);
+        }
+      }, 150);
+    }
+  }
+  function pinDelete() { pinEntry = pinEntry.slice(0,-1); updatePinDots(); }
+  function updatePinDots() {
+    document.querySelectorAll('#pinDots .pin-dot').forEach((d,i) => {
+      d.classList.remove('error');
+      d.classList.toggle('filled', i < pinEntry.length);
+    });
+  }
+
+  // Home render
+  function renderHome() {
+    const grid = document.getElementById('appGrid');
+    grid.innerHTML = '';
+    apps.filter(a => a.enabled).forEach((app, i) => {
+      const card = document.createElement('a');
+      card.className = 'app-card';
+      card.href = app.url || '#';
+      if (app.url) { card.target = '_blank'; card.rel = 'noopener'; }
+      card.style.animationDelay = `${0.05 + i * 0.07}s`;
+      card.innerHTML = `
+        <div class="app-icon ${app.color}">${app.emoji}</div>
+        <div class="app-info">
+          <div class="app-name">${app.name}</div>
+          <div class="app-desc">${app.desc}</div>
+        </div>
+        <div class="app-arrow">›</div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  // Admin render
+  function renderAdmin() {
+    const c = document.getElementById('adminCards');
+    c.innerHTML = '';
+
+    // App cards
+    apps.forEach((app, idx) => {
+      const card = document.createElement('div');
+      card.className = 'admin-card';
+      card.innerHTML = `
+        <div class="admin-card-header">
+          <span class="admin-card-id">${app.id}</span>
+          <div class="toggle ${app.enabled ? 'on' : ''}" id="tog_${idx}" onclick="toggleApp(${idx})"></div>
+        </div>
+        <div class="field-label">Button Label</div>
+        <input class="field-input" id="name_${idx}" type="text" value="${escHtml(app.name)}" placeholder="App name" />
+        <div class="field-label">Description</div>
+        <input class="field-input" id="desc_${idx}" type="text" value="${escHtml(app.desc)}" placeholder="Short description" />
+        <div class="field-label">URL</div>
+        <input class="field-input" id="url_${idx}" type="url" value="${escHtml(app.url)}" placeholder="https://..." />
+        <div class="field-label">Icon</div>
+        <div class="emoji-row" id="emojis_${idx}">
+          ${EMOJI_OPTIONS.map(e => `<div class="emoji-opt${e===app.emoji?' selected':''}" onclick="selectEmoji(${idx},'${e}')">${e}</div>`).join('')}
+        </div>`;
+      c.appendChild(card);
+    });
+
+    // Add app
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-btn';
+    addBtn.textContent = '+ Add Another App';
+    addBtn.onclick = addApp;
+    c.appendChild(addBtn);
+
+    // PIN change
+    const pinCard = document.createElement('div');
+    pinCard.className = 'pin-change-card';
+    pinCard.innerHTML = `
+      <div class="pin-change-title">🔒 Change Admin PIN</div>
+      <div class="field-label">New PIN (4 digits)</div>
+      <input class="field-input" id="newPin" type="number" maxlength="4" placeholder="Enter new 4-digit PIN" style="letter-spacing:4px;" />
+      <div class="pin-change-title" style="margin-top:14px;">🔑 Change Login Password</div>
+      <div class="field-label">New Password</div>
+      <input class="field-input" id="newLoginPw" type="text" placeholder="Enter new login password" />`;
+    c.appendChild(pinCard);
+
+    // Save
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'save-btn';
+    saveBtn.textContent = 'Save Changes';
+    saveBtn.onclick = saveChanges;
+    c.appendChild(saveBtn);
+  }
+
+  function toggleApp(idx) {
+    apps[idx].enabled = !apps[idx].enabled;
+    document.getElementById(`tog_${idx}`).classList.toggle('on', apps[idx].enabled);
+  }
+
+  function selectEmoji(idx, emoji) {
+    apps[idx].emoji = emoji;
+    document.querySelectorAll(`#emojis_${idx} .emoji-opt`).forEach(el => {
+      el.classList.toggle('selected', el.textContent === emoji);
+    });
+  }
+
+  function addApp() {
+    apps.push({ id:'app'+(apps.length+1), name:'New App', desc:'Add your description', url:'', emoji:'🌐', color: COLORS[apps.length % COLORS.length], enabled:true });
+    renderAdmin();
+    setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
+  }
+
+  function saveChanges() {
+    apps.forEach((app, idx) => {
+      app.name = document.getElementById(`name_${idx}`).value.trim() || app.name;
+      app.desc = document.getElementById(`desc_${idx}`).value.trim();
+      app.url  = document.getElementById(`url_${idx}`).value.trim();
+    });
+    saveApps();
+
+    const newPinInput = document.getElementById('newPin');
+    if (newPinInput) {
+      const np = newPinInput.value.trim();
+      if (/^\d{4}$/.test(np)) { savePin(np); newPinInput.value = ''; }
+    }
+
+    const newPwInput = document.getElementById('newLoginPw');
+    if (newPwInput && newPwInput.value.trim()) {
+      saveLoginPw(newPwInput.value.trim()); newPwInput.value = '';
+    }
+
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function escHtml(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  renderHome();
+</script>
+</body>
+</html>
+
