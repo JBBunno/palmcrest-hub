@@ -155,7 +155,13 @@
       <div class="logo-text">Palm<span>Crest</span></div>
     </div>
     <div class="tagline">App Hub</div>
-    <div class="tap-dots" id="tapDots">
+<button onclick="forceRefresh()" style="
+  background: none; border: 1px solid var(--border); border-radius: 20px;
+  color: var(--muted); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 14px; cursor: pointer; margin-top: 8px;
+  font-family: 'Barlow', sans-serif; -webkit-tap-highlight-color: transparent;
+" id="refreshBtn">↻ Refresh</button>
+<div class="tap-dots" id="tapDots">
       <div class="tap-dot"></div><div class="tap-dot"></div><div class="tap-dot"></div>
       <div class="tap-dot"></div><div class="tap-dot"></div>
     </div>
@@ -229,7 +235,15 @@
   let apps = JSON.parse(JSON.stringify(DEFAULT_APPS));
   let adminPin = localStorage.getItem('pc_hub_pin') || '1234';
   let tapCount = 0, tapTimer = null, pinEntry = '';
-
+  // ── Refresh function ─────────────────────────────────────────────────────────────────
+  async function forceRefresh() {
+  const btn = document.getElementById('refreshBtn');
+  btn.textContent = '⏳ Loading…';
+  btn.disabled = true;
+  await fetchConfig();
+  btn.textContent = '↻ Refresh';
+  btn.disabled = false;
+}
   // ── LOGIN ─────────────────────────────────────────────────────────────────
   const LOGIN_PASSWORD_KEY = 'pc_hub_pw';
   function loadLoginPw() { return localStorage.getItem(LOGIN_PASSWORD_KEY) || 'palmcrest'; }
