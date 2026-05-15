@@ -1,8 +1,8 @@
 [
   {
     "id": "app1",
-    "name": "LiveTrack 1",
-    "desc": "Shutdown Campaign Part 1",
+    "name": "LiveTrack  TGP",
+    "desc": "Talison Shut One",
     "url": "https://jbbunno.github.io/livetrack/",
     "emoji": "⚙️",
     "color": "c0",
@@ -10,8 +10,8 @@
   },
   {
     "id": "app2",
-    "name": "LiveTrack 2",
-    "desc": "Shutdown Campaign Part 2b",
+    "name": "LiveTrack TRP",
+    "desc": "Talison Shut Two",
     "url": "https://jbbunno.github.io/LiveTrack2/",
     "emoji": "🔧",
     "color": "c1",
@@ -19,10 +19,10 @@
   },
   {
     "id": "app3",
-    "name": "Live Track 3",
-    "desc": "Shutdown Campaign Part 3",
-    "url": "",
-    "emoji": "🔧",
+    "name": "Live Track CPG",
+    "desc": "Talison Shut Three",
+    "url": "https://jbbunno.github.io/livetrack3/",
+    "emoji": "🛠️",
     "color": "c2",
     "enabled": true
   }
