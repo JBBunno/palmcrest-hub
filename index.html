@@ -324,11 +324,12 @@
   function loadLoginPw() { return localStorage.getItem(LOGIN_PASSWORD_KEY) || 'palmcrest'; }
   function saveLoginPw(p) { localStorage.setItem(LOGIN_PASSWORD_KEY, p); }
 
-  if (sessionStorage.getItem('pc_authenticated') === '1') {
-    document.getElementById('loginPage').classList.remove('active');
-    document.getElementById('homePage').classList.add('active');
-    fetchConfig();
-  }
+  fetchConfig(); // always fetch on page load, updates password before login
+
+if (sessionStorage.getItem('pc_authenticated') === '1') {
+  document.getElementById('loginPage').classList.remove('active');
+  document.getElementById('homePage').classList.add('active');
+}
 
   document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
 
