@@ -529,7 +529,13 @@
     if (newPinInput && /^\d{4}$/.test(newPinInput.value.trim())) { savePin(newPinInput.value.trim()); newPinInput.value = ''; }
     const newPwInput = document.getElementById('newLoginPw');
     if (newPwInput && newPwInput.value.trim()) { saveLoginPw(newPwInput.value.trim()); newPwInput.value = ''; }
-    const json = JSON.stringify(apps, null, 2);
+    const configData = {
+  adminPin: adminPin,
+  loginPassword: loadLoginPw(),
+  apps: apps
+};
+const json = JSON.stringify(configData, null, 2);
+
     try { await navigator.clipboard.writeText(json); }
     catch {
       const ta = Object.assign(document.createElement('textarea'), { value: json });
