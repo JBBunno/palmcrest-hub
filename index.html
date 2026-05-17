@@ -363,7 +363,16 @@
     try {
       const res = await fetch(CONFIG_URL + '?cb=' + Date.now());
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      apps = await res.json();
+      const config = await res.json();
+if (config.apps) {
+  apps = config.apps;
+  if (config.adminPin) savePin(config.adminPin);
+  if (config.loginPassword) saveLoginPw(config.loginPassword);
+} else {
+  apps = config; // backwards compatible with old flat array format
+}
+renderHome();
+
       renderHome();
     } catch (err) {
       grid.innerHTML = '<div class="load-msg error">⚠ Could not load apps (' + err.message + ')</div>';
