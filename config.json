@@ -4,7 +4,7 @@
   "apps": [
     {
       "id": "app1",
-      "name": "LiveTrack CRUSHER ONE",
+      "name": "LiveTrack CPG1",
       "desc": "Talison Shut One",
       "url": "https://jbbunno.github.io/livetrack/",
       "emoji": "⚙️",
@@ -13,7 +13,7 @@
     },
     {
       "id": "app2",
-      "name": "LiveTrack CRUSHER TWO",
+      "name": "LiveTrack CPG2",
       "desc": "Talison Shut Two",
       "url": "https://jbbunno.github.io/LiveTrack2/",
       "emoji": "🔧",
@@ -22,7 +22,7 @@
     },
     {
       "id": "app3",
-      "name": "Live Track CRUSHER THREE",
+      "name": "Live Track CPG3",
       "desc": "Talison Shut Three",
       "url": "https://jbbunno.github.io/livetrack3/",
       "emoji": "🛠️",
