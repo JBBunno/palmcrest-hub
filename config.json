@@ -28,6 +28,15 @@
       "emoji": "🛠️",
       "color": "c2",
       "enabled": true
+    },
+    {
+      "id": "app4",
+      "name": "Shutdown Feedback",
+      "desc": "Submit Feedback",
+      "url": "https://jbbunno.github.io/ShutFeedback/",
+      "emoji": "📄",
+      "color": "c3",
+      "enabled": true
     }
   ]
 }
