@@ -23,8 +23,6 @@ async function enableLiveTrackNotifications() {
   }
   const messaging = firebase.messaging();
 
-  // Foreground messages don't trigger the service worker's background
-  // handler — the payload arrives here instead, so show it manually.
   messaging.onMessage(function (payload) {
     const notification = payload.notification || {};
     const title = notification.title || 'PalmCrest';
@@ -59,3 +57,55 @@ async function enableLiveTrackNotifications() {
   }
 
   if (!token) {
+    console.warn('PalmCrest Hub: no push token returned.');
+    return false;
+  }
+
+  await fetch(GAS_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'register', token: token })
+  });
+
+  console.log('PalmCrest Hub: registered for push notifications.');
+  return true;
+}
+
+function injectEnableButton() {
+  if (document.getElementById('ltNotifyBtn')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'ltNotifyBtn';
+  btn.textContent = '🔔 Enable Notifications';
+  btn.style.cssText =
+    'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;' +
+    'background:#f0a500;color:#0b1c33;border:none;padding:12px 22px;border-radius:24px;' +
+    'font-size:14px;font-weight:600;font-family:sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.35);';
+
+  btn.onclick = async function () {
+    btn.disabled = true;
+    btn.textContent = 'Enabling…';
+    const ok = await enableLiveTrackNotifications();
+    if (ok) {
+      btn.textContent = '✓ Notifications enabled';
+      setTimeout(function () { btn.remove(); }, 2000);
+    } else {
+      btn.disabled = false;
+      btn.textContent = '🔔 Enable Notifications';
+    }
+  };
+
+  document.body.appendChild(btn);
+}
+
+if ('Notification' in window && 'serviceWorker' in navigator) {
+  if (Notification.permission === 'granted') {
+    enableLiveTrackNotifications();
+  } else if (Notification.permission === 'default') {
+    injectEnableButton();
+  } else {
+    console.warn('PalmCrest Hub: notifications are blocked for this site. Enable them in your browser\'s site settings to receive alerts.');
+  }
+} else {
+  console.warn('PalmCrest Hub: push notifications are not supported in this browser.');
+}
