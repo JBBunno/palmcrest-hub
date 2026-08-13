@@ -1,10 +1,10 @@
-{
+
   "adminPin": "1234",
   "loginPassword": "shutdown",
   "apps": [
     {
       "id": "app1",
-      "name": "LiveTrack CPG1",
+      "name": "LiveTrack CRUSHER 1",
       "desc": "Talison Shut One",
       "url": "https://jbbunno.github.io/livetrack/",
       "emoji": "⚙️",
@@ -18,7 +18,7 @@
       "url": "https://jbbunno.github.io/LiveTrack2/",
       "emoji": "🔧",
       "color": "c1",
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "app3",
@@ -27,7 +27,7 @@
       "url": "https://jbbunno.github.io/livetrack3/",
       "emoji": "🛠️",
       "color": "c2",
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "app4",
