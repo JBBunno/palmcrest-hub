@@ -1,31 +1,31 @@
-
+{
   "adminPin": "1234",
   "loginPassword": "shutdown",
   "apps": [
     {
       "id": "app1",
-      "name": "LiveTrack - CGP2",
-      "desc": "Talison Shut One",
-      "url": "https://jbbunno.github.io/livetrack/",
-      "emoji": "⚙️",
+      "name": "SHUTDOWN DASHBOARD 1 - CGP2",
+      "desc": "Tallinson Dashboard 1",
+      "url": "https://jbbunno.github.io/Dashboard1/",
+      "emoji": "📊",
       "color": "c0",
       "enabled": true
     },
     {
       "id": "app2",
-      "name": "LiveTrack - TRP",
-      "desc": "Talison Shut Two",
-      "url": "https://jbbunno.github.io/LiveTrack2/",
-      "emoji": "🔧",
+      "name": "SHUTDOWN DASHBOARD 2 - TRP",
+      "desc": "Tallinson Dashboard 2",
+      "url": "https://jbbunno.github.io/Dashboard2/",
+      "emoji": "📊",
       "color": "c1",
       "enabled": true
     },
     {
       "id": "app3",
-      "name": "Live Track - TGP",
-      "desc": "Talison Shut Three",
-      "url": "https://jbbunno.github.io/livetrack3/",
-      "emoji": "🛠️",
+      "name": "SHUTDOWN DASHBOARD 3 - TGP",
+      "desc": "Tallinson Dashboard 3",
+      "url": "https://jbbunno.github.io/Dashboard3/",
+      "emoji": "📊",
       "color": "c2",
       "enabled": true
     },
