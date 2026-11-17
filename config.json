@@ -32,20 +32,12 @@
     {
       "id": "app4",
       "name": "Shutdown Feedback",
-      "desc": "Submit Feedback",
+      "desc": "",
       "url": "https://jbbunno.github.io/ShutFeedback/",
       "emoji": "📄",
       "color": "c3",
-      "enabled": true
+      "enabled": false
     },
-    {
-      "id": "app5",
-      "name": "Gantt Data Upload Panel",
-      "desc": "Upload exported data files from Ms Project",
-      "url": "https://shuthub.palmcrest.com.au/talison-upload/",
-      "emoji": "🌐",
-      "color": "c4",
-      "enabled": true
-    }
+    
   ]
 }
